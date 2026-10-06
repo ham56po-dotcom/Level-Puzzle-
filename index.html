@@ -3,107 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جلسة - قسم الرياضيات</title>
+    <title>جلسة - الصفحة الرئيسية</title>
     <style>
-        :root { --primary: #f59e0b; --bg-dark: #0f172a; --card-bg: #1e293b; --correct: #22c55e; --wrong: #ef4444; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-dark); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .card { width: 100%; max-width: 500px; background-color: var(--card-bg); padding: 20px; border-radius: 16px; box-sizing: border-box; text-align: center; }
-        .header { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; color: var(--primary); }
-        .q-title { font-size: 22px; margin: 20px 0; }
-        .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-opt { background: #334155; color: white; border: 2px solid #475569; padding: 15px; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .btn-opt.correct { background: var(--correct) !important; }
-        .btn-opt.wrong { background: var(--wrong) !important; }
-        .btn-next { background: var(--primary); color: black; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; margin-top: 15px; font-size: 16px; cursor: pointer; display: none; }
-        .back-link { display: inline-block; margin-top: 20px; color: #94a3b8; text-decoration: none; }
+        :root {
+            --primary: #f59e0b;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #3b82f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .top-bar {
+            background-color: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .coins {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .title h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        .title p {
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .game-card {
+            background-color: var(--card-bg);
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .game-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .level-badge {
+            background-color: #334155;
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="header">
-            <span>🧮 قسم الرياضيات</span>
-            <span>سؤال <span id="qIdx">1</span> من 5</span>
+    <div class="container">
+        <!-- الشريط العلوي للعملات -->
+        <div class="top-bar">
+            <h2>🎮 ألعاب جلسة</h2>
+            <div class="coins">
+                💰 <span id="coinCount">100</span>
+            </div>
         </div>
 
-        <div class="q-title" id="qText">جاري تحميل السؤال...</div>
-        <div class="opts" id="optsBox"></div>
-        <button class="btn-next" id="nextBtn" onclick="nextQ()">السؤال التالي ➔</button>
-        <a href="index.html" class="back-link">⬅ العودة للرئيسية</a>
+        <div class="title">
+            <h1>اختر اللعبة</h1>
+            <p>تحدى نفسك واجمع العملات!</p>
+        </div>
+
+        <!-- شبكة الألعاب -->
+        <div class="grid">
+            <!-- لعبة الرياضيات -->
+            <a href="math.html" class="game-card">
+                <div class="icon">🧮</div>
+                <div class="game-title">الرياضيات</div>
+                <div class="level-badge">مستوى <span id="lvlMath">1</span></div>
+            </a>
+
+            <!-- لعبة الألغاز والمعلومات -->
+            <a href="culture.html" class="game-card">
+                <div class="icon">💡</div>
+                <div class="game-title">ألغاز ومعلومات</div>
+                <div class="level-badge">مستوى <span id="lvlCulture">1</span></div>
+            </a>
+
+            <!-- لعبة الكلمات -->
+            <a href="words.html" class="game-card">
+                <div class="icon">🔤</div>
+                <div class="game-title">تحدي الكلمات</div>
+                <div class="level-badge">مستوى <span id="lvlWords">1</span></div>
+            </a>
+
+            <!-- لعبة الذاكرة -->
+            <a href="memory.html" class="game-card">
+                <div class="icon">🧠</div>
+                <div class="game-title">الذاكرة والتركيز</div>
+                <div class="level-badge">مستوى <span id="lvlMemory">1</span></div>
+            </a>
+        </div>
     </div>
 
     <script>
-        let levels = JSON.parse(localStorage.getItem('j_levels')) || { math:1, culture:1, words:1, memory:1 };
-        let lvl = levels.math;
-        let coins = parseInt(localStorage.getItem('j_coins')) || 100;
+        // تحميل وتحديث بيانات العملات والمستويات من الـ LocalStorage
+        function loadData() {
+            let coins = localStorage.getItem('j_coins') || 100;
+            let levels = JSON.parse(localStorage.getItem('j_levels')) || { math: 1, culture: 1, words: 1, memory: 1 };
 
-        let qIndex = 0;
-        let score = 0;
-        let questions = [];
-
-        function generateMathQuestions() {
-            let list = [];
-            for(let i=0; i<5; i++) {
-                let n1 = Math.floor(Math.random() * (8 * lvl)) + 2;
-                let n2 = Math.floor(Math.random() * (8 * lvl)) + 2;
-                let ans = n1 * n2;
-                let opts = [ans, ans+2, ans-3, ans+4].sort(() => Math.random() - 0.5);
-                list.push({ q: `كم يساوي: ${n1} × ${n2} ؟`, ans: ans, opts: opts });
-            }
-            return list;
+            document.getElementById('coinCount').innerText = coins;
+            document.getElementById('lvlMath').innerText = levels.math;
+            document.getElementById('lvlCulture').innerText = levels.culture;
+            document.getElementById('lvlWords').innerText = levels.words;
+            document.getElementById('lvlMemory').innerText = levels.memory;
         }
 
-        questions = generateMathQuestions();
-
-        function renderQ() {
-            let q = questions[qIndex];
-            document.getElementById('qIdx').innerText = qIndex + 1;
-            document.getElementById('qText').innerText = q.q;
-            document.getElementById('nextBtn').style.display = 'none';
-
-            let box = document.getElementById('optsBox');
-            box.innerHTML = '';
-            q.opts.forEach(opt => {
-                let btn = document.createElement('button');
-                btn.className = 'btn-opt';
-                btn.innerText = opt;
-                btn.onclick = () => check(btn, opt, q.ans);
-                box.appendChild(btn);
-            });
-        }
-
-        function check(btn, selected, correct) {
-            let btns = document.querySelectorAll('.btn-opt');
-            btns.forEach(b => b.disabled = true);
-
-            if(selected === correct) {
-                btn.classList.add('correct');
-                score++;
-            } else {
-                btn.classList.add('wrong');
-                btns.forEach(b => { if(parseInt(b.innerText) === correct) b.classList.add('correct'); });
-            }
-            document.getElementById('nextBtn').style.display = 'block';
-        }
-
-        function nextQ() {
-            qIndex++;
-            if(qIndex < 5) {
-                renderQ();
-            } else {
-                let earned = score * 10;
-                coins += earned;
-                if(score >= 3) levels.math++;
-                
-                localStorage.setItem('j_coins', coins);
-                localStorage.setItem('j_levels', JSON.stringify(levels));
-
-                alert(`انتهى الدور! أجبْت صح على ${score}/5\nوحصلت على ${earned} عملة 💰`);
-                window.location.href = 'index.html'; // الانتقال التلقائي لصفحة الرئيسية
-            }
-        }
-
-        renderQ();
+        loadData();
     </script>
 </body>
 </html>
