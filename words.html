@@ -2,13 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جلسة - تحدي الكلمات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>جلسة - بنك تحدي الكلمات</title>
     <link rel="icon" type="image/png" href="./logo.png">
     <link rel="manifest" href="./manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        * { touch-action: manipulation; }
         body {
             font-family: 'Tajawal', sans-serif;
             background-color: #0f172a;
@@ -22,12 +23,12 @@
             padding: 1rem;
         }
         .card {
-            background: rgba(30, 41, 59, 0.8);
+            background: rgba(30, 41, 59, 0.95);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 1.5rem;
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             padding: 1.5rem;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         }
@@ -36,71 +37,89 @@
             border: 2px solid #334155;
             transition: all 0.2s ease;
         }
-        .btn-option:active {
-            transform: scale(0.98);
-        }
-        .btn-option.correct {
-            background-color: #15803d !important;
-            border-color: #22c55e !important;
-            color: white;
-        }
-        .btn-option.wrong {
-            background-color: #b91c1c !important;
-            border-color: #ef4444 !important;
-            color: white;
-        }
+        .btn-option:active { transform: scale(0.98); }
+        .btn-option.correct { background-color: #15803d !important; border-color: #22c55e !important; color: white; }
+        .btn-option.wrong { background-color: #b91c1c !important; border-color: #ef4444 !important; color: white; }
     </style>
 </head>
 <body>
 
     <div class="card text-center">
-        <!-- الشريط العلوي -->
         <div class="flex justify-between items-center mb-6 pb-3 border-b border-slate-700">
-            <span class="bg-emerald-500/20 text-emerald-400 font-bold px-3 py-1 rounded-full text-sm">🔤 قسم تحدي الكلمات</span>
-            <span id="question-count" class="text-emerald-400 font-bold">سؤال 1 من 5</span>
+            <span class="bg-emerald-500/20 text-emerald-400 font-bold px-3 py-1 rounded-full text-sm">🔤 تحدي معاني الكلمات</span>
+            <span id="question-count" class="text-emerald-400 font-bold">السؤال 1 من 10</span>
         </div>
 
-        <!-- منطقة السؤال -->
         <div id="quiz-box">
-            <h2 id="question-text" class="text-xl font-bold mb-6 text-slate-100 leading-relaxed">جاري تحميل السؤال...</h2>
-            <div id="options-container" class="grid grid-cols-1 gap-3 mb-6">
-                <!-- الإجابات -->
-            </div>
+            <h2 id="question-text" class="text-xl font-bold mb-6 text-slate-100 leading-relaxed">...</h2>
+            <div id="options-container" class="grid grid-cols-1 gap-3 mb-6"></div>
         </div>
 
-        <!-- نتيجة التحدي -->
         <div id="result-box" class="hidden my-4">
             <div class="text-5xl mb-3">📚</div>
-            <h3 class="text-2xl font-bold mb-2">أحسنت! أتقنت تحدي الكلمات</h3>
+            <h3 class="text-2xl font-bold mb-2">أحسنت! أكملت الجولة</h3>
             <p id="score-text" class="text-lg text-slate-300 mb-6">جمعت نقاط جديدة!</p>
-            <button onclick="location.reload()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold py-3 rounded-xl mb-3">إعادة التحدي 🔄</button>
+            <button onclick="startNewRound()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold py-3 rounded-xl mb-3">جولة جديدة 🔄</button>
         </div>
 
-        <!-- زر العودة -->
         <a href="index.html" class="inline-block text-slate-400 hover:text-white text-sm mt-2 transition">← العودة للرئيسية</a>
     </div>
 
     <script>
-        const questions = [
-            { question: "ما مرادف كلمة 'الصمود'؟", options: ["الثبات والتحمل", "الهروب", "الضعف", "التراجع"], correct: 0 },
-            { question: "ما ضد كلمة 'السخاء'؟", options: ["الكرم", "البخل", "الوفاء", "الشجاعة"], correct: 1 },
-            { question: "ما الجمع الصحيح لكلمة 'حسام'؟", options: ["حواسم", "أحسام", "حسمة", "أحسم"], correct: 1 },
-            { question: "ما معنى كلمة 'الشغف'؟", options: ["الشدة والحزن", "الحب والاهتمام الشديد", "الخوف والتردد", "التعب الإرهاق"], correct: 1 },
-            { question: "ما مفرد كلمة 'دلاء'؟", options: ["دالي", "دلو", "دالية", "دليل"], correct: 1 }
+        const dictionary = [
+            { word: "الشغف", meaning: "الحب والاهتمام الشديد", wrong: ["الخوف والتردد", "التعب والإرهاق", "الكراهية"] },
+            { word: "الصمود", meaning: "الثبات والتحمل", wrong: ["الهروب والتراجع", "الضعف والاستسلام", "الخوف"] },
+            { word: "السخاء", meaning: "الكرم والجود", wrong: ["البخل الشديد", "الخيانة", "السرعة"] },
+            { word: "البسالة", meaning: "الشجاعة والجرأة", wrong: ["الجبن والخوف", "الحزن", "الكسل"] },
+            { word: "العزيمة", meaning: "الإرادة القوية", wrong: ["التردد", "الضعف", "التكاسل"] },
+            { word: "الغسق", meaning: "بداية ظلمة الليل", wrong: ["منتصف الظهيرة", "شروق الشمس", "شدة الحر"] },
+            { word: "الحسام", meaning: "السيف القاطع", wrong: ["الدرع المكين", "الرمح الطويل", "القوس"] },
+            { word: "الوفاء", meaning: "الإخلاص وحفظ العهد", wrong: ["الغدر والخيانة", "النفاق", "الخوف"] },
+            { word: "النبل", meaning: "الشرف والأخلاق العالية", wrong: ["الخسة", "الضعف", "الجهل"] },
+            { word: "الصهيل", meaning: "صوت الخيل", wrong: ["صوت الأسد", "صوت العصفور", "صوت الذئب"] },
+            { word: "الزئير", meaning: "صوت الأسد", wrong: ["صوت القط", "صوت الحصان", "صوت الحمامة"] },
+            { word: "الخرير", meaning: "صوت الماء الجاري", wrong: ["صوت الريح", "صوت النار", "صوت الأشجار"] }
         ];
 
-        let currentIndex = 0;
+        let currentQuestion = 0;
         let score = 0;
+        let questionsList = [];
+
+        function generateQuestions() {
+            questionsList = [];
+            for(let i = 0; i < 10; i++) {
+                let item = dictionary[Math.floor(Math.random() * dictionary.length)];
+                let isSynonym = Math.random() > 0.5;
+                
+                if(isSynonym) {
+                    let options = [item.meaning, ...item.wrong].sort(() => Math.random() - 0.5);
+                    questionsList.push({
+                        q: `ما معنى أو مرادف كلمة "${item.word}"؟`,
+                        options: options,
+                        correct: options.indexOf(item.meaning)
+                    });
+                } else {
+                    let allWords = dictionary.map(d => d.word);
+                    let wrongWords = allWords.filter(w => w !== item.word).sort(() => Math.random() - 0.5).slice(0, 3);
+                    let options = [item.word, ...wrongWords].sort(() => Math.random() - 0.5);
+                    questionsList.push({
+                        q: `أي كلمة تعني: "${item.meaning}"؟`,
+                        options: options,
+                        correct: options.indexOf(item.word)
+                    });
+                }
+            }
+        }
 
         function loadQuestion() {
-            if (currentIndex >= questions.length) {
+            if (currentQuestion >= 10) {
                 showResults();
                 return;
             }
 
-            const q = questions[currentIndex];
-            document.getElementById('question-count').innerText = `سؤال ${currentIndex + 1} من ${questions.length}`;
-            document.getElementById('question-text').innerText = q.question;
+            const q = questionsList[currentQuestion];
+            document.getElementById('question-count').innerText = `السؤال ${currentQuestion + 1} من 10`;
+            document.getElementById('question-text').innerText = q.q;
 
             const container = document.getElementById('options-container');
             container.innerHTML = '';
@@ -115,11 +134,10 @@
         }
 
         function checkAnswer(selected, btn) {
-            const container = document.getElementById('options-container');
-            const buttons = container.querySelectorAll('button');
+            const buttons = document.querySelectorAll('.btn-option');
             buttons.forEach(b => b.disabled = true);
 
-            const correctIdx = questions[currentIndex].correct;
+            const correctIdx = questionsList[currentQuestion].correct;
 
             if (selected === correctIdx) {
                 btn.classList.add('correct');
@@ -130,19 +148,27 @@
             }
 
             setTimeout(() => {
-                currentIndex++;
+                currentQuestion++;
                 loadQuestion();
-            }, 1200);
+            }, 1000);
+        }
+
+        function startNewRound() {
+            currentQuestion = 0;
+            score = 0;
+            generateQuestions();
+            document.getElementById('quiz-box').classList.remove('hidden');
+            document.getElementById('result-box').classList.add('hidden');
+            loadQuestion();
         }
 
         function showResults() {
             document.getElementById('quiz-box').classList.add('hidden');
             document.getElementById('result-box').classList.remove('hidden');
-            document.getElementById('score-text').innerText = `جمعت ${score} نقطة في اللغة والكلمات! 🎉`;
+            document.getElementById('score-text').innerText = `جمعت ${score} نقطة في هذه الجولة! 🎉`;
         }
 
-        window.onload = loadQuestion;
+        window.onload = startNewRound;
     </script>
 </body>
 </html>
-    
