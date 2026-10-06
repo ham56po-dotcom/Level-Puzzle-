@@ -3,367 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جلسة - ألعاب الذكاء والتحدي</title>
-    <meta name="theme-color" content="#f59e0b">
+    <title>جلسة - قسم الرياضيات</title>
     <style>
-        :root {
-            --primary: #f59e0b;
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #3b82f6;
-            --text: #f8fafc;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        header {
-            background-color: #1e293b;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #334155;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-box {
-            background-color: var(--primary);
-            color: #000;
-            font-weight: bold;
-            font-size: 20px;
-            padding: 8px 14px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
-        }
-
-        .stats-bar {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .coin-badge {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--primary);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            border: 1px solid var(--primary);
-        }
-
-        .offline-status {
-            font-size: 11px;
-            background: #22c55e;
-            color: black;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: bold;
-        }
-
-        .container {
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .section-card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-
-        .week-days {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-
-        .day-circle {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background-color: #334155;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-        }
-
-        .day-circle.active {
-            background-color: #22c55e;
-            color: white;
-            font-weight: bold;
-        }
-
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .game-card {
-            background-color: #334155;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-        }
-
-        .game-card:hover {
-            transform: translateY(-5px);
-            background-color: #475569;
-        }
-
-        .game-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .game-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(15, 23, 42, 0.95);
-            z-index: 100;
-            padding: 20px;
-            box-sizing: border-box;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn {
-            background-color: var(--primary);
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        progress {
-            width: 100%;
-            height: 12px;
-            accent-color: var(--primary);
-        }
+        :root { --primary: #f59e0b; --bg-dark: #0f172a; --card-bg: #1e293b; --correct: #22c55e; --wrong: #ef4444; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-dark); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .card { width: 100%; max-width: 500px; background-color: var(--card-bg); padding: 20px; border-radius: 16px; box-sizing: border-box; text-align: center; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; color: var(--primary); }
+        .q-title { font-size: 22px; margin: 20px 0; }
+        .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-opt { background: #334155; color: white; border: 2px solid #475569; padding: 15px; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .btn-opt.correct { background: var(--correct) !important; }
+        .btn-opt.wrong { background: var(--wrong) !important; }
+        .btn-next { background: var(--primary); color: black; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; margin-top: 15px; font-size: 16px; cursor: pointer; display: none; }
+        .back-link { display: inline-block; margin-top: 20px; color: #94a3b8; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo-container">
-            <div class="logo-box">جلسة</div>
-            <div>
-                <span style="font-weight: bold; display: block;">تحدي العقل</span>
-                <span class="offline-status">جاهز بدون نت ⚡</span>
-            </div>
-        </div>
-        <div class="stats-bar">
-            <div class="coin-badge">💰 <span id="coins">150</span></div>
-            <button class="icon-btn" id="soundBtn" onclick="toggleSound()">🔊</button>
-            <button class="icon-btn" onclick="toggleSettings()">⚙️</button>
-        </div>
-    </header>
-
-    <div class="container">
-        <!-- أداء الأسبوع -->
-        <div class="section-card">
-            <h3>📈 أداء الأسبوع والتمرين اليومي</h3>
-            <div class="week-days">
-                <div class="day-circle active">أحد</div>
-                <div class="day-circle active">إثنين</div>
-                <div class="day-circle active">ثلاثاء</div>
-                <div class="day-circle">أربعاء</div>
-                <div class="day-circle">خميس</div>
-                <div class="day-circle">جمعة</div>
-                <div class="day-circle">سبت</div>
-            </div>
+    <div class="card">
+        <div class="header">
+            <span>🧮 قسم الرياضيات</span>
+            <span>سؤال <span id="qIdx">1</span> من 5</span>
         </div>
 
-        <!-- معدل التقدم -->
-        <div class="section-card">
-            <h3>📊 معدل التقدم العقلي</h3>
-            <p>الذاكرة: <progress value="80" max="100"></progress></p>
-            <p>السرعة والتركيز: <progress value="65" max="100"></progress></p>
-            <p>حل المشكلات: <progress value="90" max="100"></progress></p>
-        </div>
-
-        <!-- ألعاب الذكاء -->
-        <div class="section-card">
-            <h3>🎮 ألعاب الذكاء (بدون نت)</h3>
-            <div class="games-grid">
-                <div class="game-card" onclick="startGame('math')">
-                    <div class="game-icon">🧮</div>
-                    <h4>الرياضيات السريعة</h4>
-                </div>
-                <div class="game-card" onclick="startGame('memory')">
-                    <div class="game-icon">🧠</div>
-                    <h4>قوة الذاكرة</h4>
-                </div>
-                <div class="game-card" onclick="startGame('words')">
-                    <div class="game-icon">🔤</div>
-                    <h4>تحدي الكلمات</h4>
-                </div>
-                <div class="game-card" onclick="startGame('sudoku')">
-                    <div class="game-icon">🧩</div>
-                    <h4>مكعبات السودوكو</h4>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- نافذة اللعبة -->
-    <div id="gameModal" class="game-modal">
-        <h2 id="gameTitle">اسم اللعبة</h2>
-        <div id="gameArea" style="margin: 20px 0; font-size: 24px; text-align: center;"></div>
-        <button class="btn" onclick="winGame()">إنهاء وإضافة 20 عملة 💰</button>
-        <button class="btn" style="background-color: #ef4444; color: white;" onclick="closeGame()">خروج</button>
+        <div class="q-title" id="qText">جاري تحميل السؤال...</div>
+        <div class="opts" id="optsBox"></div>
+        <button class="btn-next" id="nextBtn" onclick="nextQ()">السؤال التالي ➔</button>
+        <a href="index.html" class="back-link">⬅ العودة للرئيسية</a>
     </div>
 
     <script>
-        let coins = parseInt(localStorage.getItem('jalsa_coins')) || 150;
-        document.getElementById('coins').innerText = coins;
+        let levels = JSON.parse(localStorage.getItem('j_levels')) || { math:1, culture:1, words:1, memory:1 };
+        let lvl = levels.math;
+        let coins = parseInt(localStorage.getItem('j_coins')) || 100;
 
-        let soundEnabled = true;
-        let audioCtx = null;
+        let qIndex = 0;
+        let score = 0;
+        let questions = [];
 
-        function getAudioContext() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function generateMathQuestions() {
+            let list = [];
+            for(let i=0; i<5; i++) {
+                let n1 = Math.floor(Math.random() * (8 * lvl)) + 2;
+                let n2 = Math.floor(Math.random() * (8 * lvl)) + 2;
+                let ans = n1 * n2;
+                let opts = [ans, ans+2, ans-3, ans+4].sort(() => Math.random() - 0.5);
+                list.push({ q: `كم يساوي: ${n1} × ${n2} ؟`, ans: ans, opts: opts });
             }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            return audioCtx;
+            return list;
         }
 
-        function playSound(type) {
-            if (!soundEnabled) return;
-            try {
-                let ctx = getAudioContext();
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
+        questions = generateMathQuestions();
 
-                if (type === 'click') {
-                    osc.frequency.setValueAtTime(400, ctx.currentTime);
-                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.08);
-                } else if (type === 'win') {
-                    // نغمة فوز احتفالية سريعة
-                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
-                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
-                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.35);
-                }
-            } catch(e){}
+        function renderQ() {
+            let q = questions[qIndex];
+            document.getElementById('qIdx').innerText = qIndex + 1;
+            document.getElementById('qText').innerText = q.q;
+            document.getElementById('nextBtn').style.display = 'none';
+
+            let box = document.getElementById('optsBox');
+            box.innerHTML = '';
+            q.opts.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = 'btn-opt';
+                btn.innerText = opt;
+                btn.onclick = () => check(btn, opt, q.ans);
+                box.appendChild(btn);
+            });
         }
 
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            const btn = document.getElementById('soundBtn');
-            btn.innerText = soundEnabled ? '🔊' : '🔇';
-            if (soundEnabled) playSound('click');
-        }
+        function check(btn, selected, correct) {
+            let btns = document.querySelectorAll('.btn-opt');
+            btns.forEach(b => b.disabled = true);
 
-        function startGame(type) {
-            playSound('click');
-            const modal = document.getElementById('gameModal');
-            const title = document.getElementById('gameTitle');
-            const area = document.getElementById('gameArea');
-            modal.style.display = 'flex';
-
-            if(type === 'math') {
-                title.innerText = 'تحدي السرعة - الرياضيات';
-                area.innerText = 'كم يساوي: 8 × 7 ؟';
-            } else if(type === 'memory') {
-                title.innerText = 'تحدي الذاكرة';
-                area.innerText = 'احفظ التسلسل: [ 🟢 - 🔴 - 🟡 - 🔵 ]';
-            } else if(type === 'words') {
-                title.innerText = 'تحدي اللغات والكلمات';
-                area.innerText = 'كون كلمة من الحروف: [ ع - ب - و - ر ]';
+            if(selected === correct) {
+                btn.classList.add('correct');
+                score++;
             } else {
-                title.innerText = 'مكعبات ألغاز السودوكو';
-                area.innerText = 'رتب الأشكال الملونة في الشبكة!';
+                btn.classList.add('wrong');
+                btns.forEach(b => { if(parseInt(b.innerText) === correct) b.classList.add('correct'); });
+            }
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function nextQ() {
+            qIndex++;
+            if(qIndex < 5) {
+                renderQ();
+            } else {
+                let earned = score * 10;
+                coins += earned;
+                if(score >= 3) levels.math++;
+                
+                localStorage.setItem('j_coins', coins);
+                localStorage.setItem('j_levels', JSON.stringify(levels));
+
+                alert(`انتهى الدور! أجبْت صح على ${score}/5\nوحصلت على ${earned} عملة 💰`);
+                window.location.href = 'index.html'; // الانتقال التلقائي لصفحة الرئيسية
             }
         }
 
-        function winGame() {
-            playSound('win');
-            coins += 20;
-            localStorage.setItem('jalsa_coins', coins);
-            document.getElementById('coins').innerText = coins;
-            alert('أحسنت! فزت بـ 20 عملة 💰');
-            closeGame();
-        }
-
-        function closeGame() {
-            playSound('click');
-            document.getElementById('gameModal').style.display = 'none';
-        }
-
-        function toggleSettings() {
-            playSound('click');
-            alert(`⚙️️ الإعدادات:\n- وضع الأوفلاين: مفعل ⚡\n- الصوت: ${soundEnabled ? 'مفعل 🔊' : 'مكتوم 🔇'}\n- حفظ التقدم: تلقائي 💾`);
-        }
-
-        if ('serviceWorker' in navigator) {
-            const swCode = `
-                const CACHE_NAME = 'jalsa-v2';
-                self.addEventListener('install', e => {
-                    e.waitUntil(
-                        caches.open(CACHE_NAME).then(cache => {
-                            return cache.addAll(['./']);
-                        })
-                    );
-                });
-                self.addEventListener('fetch', e => {
-                    e.respondWith(
-                        caches.match(e.request).then(response => {
-                            return response || fetch(e.request);
-                        })
-                    );
-                });
-            `;
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(blob);
-            navigator.serviceWorker.register(swUrl).catch(()=>{});
-        }
+        renderQ();
     </script>
 </body>
-                      </html>
-                      
+</html>
