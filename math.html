@@ -2,13 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جلسة - تحدي الحساب والرياضيات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>جلسة - بنك تحدي الحساب (+1000 سؤال)</title>
     <link rel="icon" type="image/png" href="./logo.png">
     <link rel="manifest" href="./manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        * { touch-action: manipulation; }
         body {
             font-family: 'Tajawal', sans-serif;
             background-color: #0f172a;
@@ -22,12 +23,12 @@
             padding: 1rem;
         }
         .card {
-            background: rgba(30, 41, 59, 0.8);
+            background: rgba(30, 41, 59, 0.95);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 1.5rem;
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             padding: 1.5rem;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         }
@@ -36,112 +37,126 @@
             border: 2px solid #334155;
             transition: all 0.2s ease;
         }
-        .btn-option:active {
-            transform: scale(0.98);
-        }
-        .btn-option.correct {
-            background-color: #15803d !important;
-            border-color: #22c55e !important;
-            color: white;
-        }
-        .btn-option.wrong {
-            background-color: #b91c1c !important;
-            border-color: #ef4444 !important;
-            color: white;
-        }
+        .btn-option:active { transform: scale(0.98); }
+        .btn-option.correct { background-color: #15803d !important; border-color: #22c55e !important; color: white; }
+        .btn-option.wrong { background-color: #b91c1c !important; border-color: #ef4444 !important; color: white; }
     </style>
 </head>
 <body>
 
     <div class="card text-center">
-        <!-- الشريط العلوي -->
         <div class="flex justify-between items-center mb-6 pb-3 border-b border-slate-700">
-            <span class="bg-blue-500/20 text-blue-400 font-bold px-3 py-1 rounded-full text-sm">🔢 تحدي الحساب</span>
-            <span id="question-count" class="text-blue-400 font-bold">سؤال 1 من 5</span>
+            <span class="bg-blue-500/20 text-blue-400 font-bold px-3 py-1 rounded-full text-sm">🔢 تحدي الحساب اللانهائي</span>
+            <span id="question-count" class="text-blue-400 font-bold">السؤال 1 من 10</span>
         </div>
 
-        <!-- منطقة السؤال -->
         <div id="quiz-box">
-            <h2 id="question-text" class="text-2xl font-bold mb-6 text-slate-100 leading-relaxed">جاري تحميل السؤال...</h2>
-            <div id="options-container" class="grid grid-cols-1 gap-3 mb-6">
-                <!-- الإجابات -->
-            </div>
+            <h2 id="question-text" class="text-3xl font-bold mb-6 text-slate-100 dir-ltr">...</h2>
+            <div id="options-container" class="grid grid-cols-2 gap-3 mb-6"></div>
         </div>
 
-        <!-- نتيجة التحدي -->
         <div id="result-box" class="hidden my-4">
-            <div class="text-5xl mb-3">🔢</div>
-            <h3 class="text-2xl font-bold mb-2">أحسنت! أتممت التحدي بنجاح</h3>
-            <p id="score-text" class="text-lg text-slate-300 mb-6">جمعت نقاط جديدة!</p>
-            <button onclick="location.reload()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl mb-3">تحدي جديد 🔄</button>
+            <div class="text-5xl mb-3">🏆</div>
+            <h3 class="text-2xl font-bold mb-2">أحسنت! أتممت الجولة</h3>
+            <p id="score-text" class="text-lg text-slate-300 mb-6">نقاطك: 0</p>
+            <button onclick="startNewGame()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl mb-3">جولة جديدة 🔄</button>
         </div>
 
-        <!-- زر العودة -->
         <a href="index.html" class="inline-block text-slate-400 hover:text-white text-sm mt-2 transition">← العودة للرئيسية</a>
     </div>
 
     <script>
-        const questions = [
-            { question: "ما هو حاصل ضرب 7 × 8 ؟", options: ["54", "56", "64", "48"], correct: 1 },
-            { question: "ما الناتج: (15 + 25) ÷ 5 ؟", options: ["6", "10", "8", "5"], correct: 2 },
-            { question: "ما الجذر التربيعي للعدد 144 ؟", options: ["10", "11", "12", "14"], correct: 2 },
-            { question: "كم يساوي 25% من العدد 200 ؟", options: ["25", "50", "75", "100"], correct: 1 },
-            { question: "ما ناتج: 9² - 31 ؟", options: ["50", "40", "60", "45"], correct: 0 }
-        ];
-
-        let currentIndex = 0;
+        let currentQuestion = 0;
         let score = 0;
+        let totalQuestions = 10;
+        let correctAnswer = 0;
 
-        function loadQuestion() {
-            if (currentIndex >= questions.length) {
-                showResults();
-                return;
+        function generateQuestion() {
+            const ops = ['+', '-', '×', '÷'];
+            const op = ops[Math.floor(Math.random() * ops.length)];
+            let a, b;
+
+            if (op === '+') {
+                a = Math.floor(Math.random() * 90) + 10;
+                b = Math.floor(Math.random() * 90) + 10;
+                correctAnswer = a + b;
+            } else if (op === '-') {
+                a = Math.floor(Math.random() * 90) + 20;
+                b = Math.floor(Math.random() * a) + 1;
+                correctAnswer = a - b;
+            } else if (op === '×') {
+                a = Math.floor(Math.random() * 15) + 2;
+                b = Math.floor(Math.random() * 15) + 2;
+                correctAnswer = a * b;
+            } else {
+                b = Math.floor(Math.random() * 12) + 2;
+                correctAnswer = Math.floor(Math.random() * 12) + 1;
+                a = b * correctAnswer;
             }
 
-            const q = questions[currentIndex];
-            document.getElementById('question-count').innerText = `سؤال ${currentIndex + 1} من ${questions.length}`;
-            document.getElementById('question-text').innerText = q.question;
+            document.getElementById('question-text').innerText = `${a} ${op} ${b} = ?`;
+
+            let options = [correctAnswer];
+            while (options.length < 4) {
+                let wrong = correctAnswer + (Math.floor(Math.random() * 16) - 8);
+                if (wrong !== correctAnswer && wrong >= 0 && !options.includes(wrong)) {
+                    options.push(wrong);
+                }
+            }
+            options.sort(() => Math.random() - 0.5);
 
             const container = document.getElementById('options-container');
             container.innerHTML = '';
-
-            q.options.forEach((opt, idx) => {
+            options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = "btn-option w-full py-3 px-4 rounded-xl text-center text-slate-200 font-bold text-lg";
+                btn.className = "btn-option w-full py-3 rounded-xl text-slate-100 font-bold text-xl";
                 btn.innerText = opt;
-                btn.onclick = () => checkAnswer(idx, btn);
+                btn.onclick = () => checkAnswer(opt, btn);
                 container.appendChild(btn);
             });
         }
 
         function checkAnswer(selected, btn) {
-            const container = document.getElementById('options-container');
-            const buttons = container.querySelectorAll('button');
+            const buttons = document.querySelectorAll('.btn-option');
             buttons.forEach(b => b.disabled = true);
 
-            const correctIdx = questions[currentIndex].correct;
-
-            if (selected === correctIdx) {
+            if (selected === correctAnswer) {
                 btn.classList.add('correct');
                 score += 10;
             } else {
                 btn.classList.add('wrong');
-                buttons[correctIdx].classList.add('correct');
+                buttons.forEach(b => {
+                    if (parseInt(b.innerText) === correctAnswer) b.classList.add('correct');
+                });
             }
 
             setTimeout(() => {
-                currentIndex++;
-                loadQuestion();
-            }, 1200);
+                currentQuestion++;
+                if (currentQuestion < totalQuestions) {
+                    document.getElementById('question-count').innerText = `السؤال ${currentQuestion + 1} من ${totalQuestions}`;
+                    generateQuestion();
+                } else {
+                    showResults();
+                }
+            }, 1000);
+        }
+
+        function startNewGame() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quiz-box').classList.remove('hidden');
+            document.getElementById('result-box').classList.add('hidden');
+            document.getElementById('question-count').innerText = `السؤال 1 من ${totalQuestions}`;
+            generateQuestion();
         }
 
         function showResults() {
             document.getElementById('quiz-box').classList.add('hidden');
             document.getElementById('result-box').classList.remove('hidden');
-            document.getElementById('score-text').innerText = `جمعت ${score} نقطة بنجاح! 🎉`;
+            document.getElementById('score-text').innerText = `جمعت ${score} نقطة في هذه الجولة! 🎉`;
         }
 
-        window.onload = loadQuestion;
+        window.onload = startNewGame;
     </script>
 </body>
 </html>
