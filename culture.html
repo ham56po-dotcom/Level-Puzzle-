@@ -3,113 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جلسة - ألغاز ومعلومات</title>
+    <title>جلسة - تحدي الكلمات</title>
+    <link rel="icon" type="image/png" href="./logo.png">
+    <link rel="manifest" href="./manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #f59e0b; --bg-dark: #0f172a; --card-bg: #1e293b; --correct: #22c55e; --wrong: #ef4444; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-dark); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .card { width: 100%; max-width: 500px; background-color: var(--card-bg); padding: 20px; border-radius: 16px; box-sizing: border-box; text-align: center; }
-        .header { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; color: var(--primary); }
-        .q-title { font-size: 20px; margin: 20px 0; min-height: 60px; display: flex; align-items: center; justify-content: center; }
-        .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-opt { background: #334155; color: white; border: 2px solid #475569; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .btn-opt.correct { background: var(--correct) !important; }
-        .btn-opt.wrong { background: var(--wrong) !important; }
-        .btn-next { background: var(--primary); color: black; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; margin-top: 15px; font-size: 16px; cursor: pointer; display: none; }
-        .back-link { display: inline-block; margin-top: 20px; color: #94a3b8; text-decoration: none; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 1rem;
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 500px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        .btn-option {
+            background: #1e293b;
+            border: 2px solid #334155;
+            transition: all 0.2s ease;
+        }
+        .btn-option:active {
+            transform: scale(0.98);
+        }
+        .btn-option.correct {
+            background-color: #15803d !important;
+            border-color: #22c55e !important;
+            color: white;
+        }
+        .btn-option.wrong {
+            background-color: #b91c1c !important;
+            border-color: #ef4444 !important;
+            color: white;
+        }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="header">
-            <span>💡 قسم الألغاز والمعلومات</span>
-            <span>سؤال <span id="qIdx">1</span> من 5</span>
+    <div class="card text-center">
+        <!-- الشريط العلوي -->
+        <div class="flex justify-between items-center mb-6 pb-3 border-b border-slate-700">
+            <span class="bg-amber-500/20 text-amber-400 font-bold px-3 py-1 rounded-full text-sm">🔤 قسم تحدي الكلمات</span>
+            <span id="question-count" class="text-amber-400 font-bold">سؤال 1 من 5</span>
         </div>
 
-        <div class="q-title" id="qText">جاري تحميل السؤال...</div>
-        <div class="opts" id="optsBox"></div>
-        <button class="btn-next" id="nextBtn" onclick="nextQ()">السؤال التالي ➔</button>
-        <a href="index.html" class="back-link">⬅ العودة للرئيسية</a>
+        <!-- منطقة السؤال -->
+        <div id="quiz-box">
+            <h2 id="question-text" class="text-xl font-bold mb-6 text-slate-100 leading-relaxed">جاري تحميل السؤال...</h2>
+            <div id="options-container" class="grid grid-cols-1 gap-3 mb-6">
+                <!-- الإجابات ستظهر هنا -->
+            </div>
+        </div>
+
+        <!-- نتيجة نهاية التحدي -->
+        <div id="result-box" class="hidden my-4">
+            <div class="text-5xl mb-3">🎉</div>
+            <h3 class="text-2xl font-bold mb-2">أحسنت! أكملت التحدي</h3>
+            <p id="score-text" class="text-lg text-slate-300 mb-6">جمعت 0 عملة!</p>
+            <button onclick="location.reload()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 rounded-xl mb-3">إعادة التحدي 🔄</button>
+        </div>
+
+        <!-- زر العودة -->
+        <a href="index.html" class="inline-block text-slate-400 hover:text-white text-sm mt-2 transition">← العودة للرئيسية</a>
     </div>
 
     <script>
-        let levels = JSON.parse(localStorage.getItem('j_levels')) || { math:1, culture:1, words:1, memory:1 };
-        let coins = parseInt(localStorage.getItem('j_coins')) || 100;
-
-        let qIndex = 0;
-        let score = 0;
-        let questions = [];
-
-        const cultureDB = [
-            {q: "ما هي عاصمة سلطنة عمان؟", a: "مسقط", w: ["صلالة", "صحار", "نزوى"]},
-            {q: "ما هو أطول نهر في العالم؟", a: "النيل", w: ["الأمازون", "الفرات", "الكونغو"]},
-            {q: "كم عدد كواكب المجموعة الشمسية؟", a: "8", w: ["7", "9", "10"]},
-            {q: "ما هو أسرع حيوان بري في العالم؟", a: "الفهد", w: ["الأسد", "الغزال", "الحصان"]},
-            {q: "ما هي عاصمة مصر؟", a: "القاهرة", w: ["الإسكندرية", "الجيزة", "الأقصر"]},
-            {q: "ما هي القارة الكبرى في العالم من حيث المساحة؟", a: "آسيا", w: ["إفريقيا", "أوروبا", "أمريكا الشمالية"]},
-            {q: "ما هو العنصر الكيميائي الأكثر وفرة في غلاف الأرض الجوي؟", a: "النيتروجين", w: ["الأكسجين", "الهيدروجين", "الكربون"]}
+        const questions = [
+            {
+                question: "ما مرادف كلمة 'الصمود'؟",
+                options: ["الثبات والتحمل", "الهروب", "الضعف", "التراجع"],
+                correct: 0
+            },
+            {
+                question: "ما ضد كلمة 'السخاء'؟",
+                options: ["الكرم", "البخل", "الوفاء", "الشجاعة"],
+                correct: 1
+            },
+            {
+                question: "ما الجمع الصحيح لكلمة 'حسام'؟",
+                options: ["حواسم", "أحسام", "حسمة", "أحسم"],
+                correct: 1
+            },
+            {
+                question: "ما معنى كلمة 'الشغف'؟",
+                options: ["الشدة والحزن", "الحب والاهتمام الشديد", "الخوف والتردد", "التعب الإرهاق"],
+                correct: 1
+            },
+            {
+                question: "ما مفرد كلمة 'دلاء'؟",
+                options: ["دالي", "دلو", "دالية", "دليل"],
+                correct: 1
+            }
         ];
 
-        function generateCultureQuestions() {
-            let shuffled = cultureDB.sort(() => Math.random() - 0.5).slice(0, 5);
-            return shuffled.map(item => {
-                let opts = [item.a, ...item.w].sort(() => Math.random() - 0.5);
-                return { q: item.q, ans: item.a, opts: opts };
-            });
-        }
+        let currentIndex = 0;
+        let score = 0;
+        let coins = parseInt(localStorage.getItem('jalsa_coins') || '100');
 
-        questions = generateCultureQuestions();
+        function loadQuestion() {
+            if (currentIndex >= questions.length) {
+                showResults();
+                return;
+            }
 
-        function renderQ() {
-            let q = questions[qIndex];
-            document.getElementById('qIdx').innerText = qIndex + 1;
-            document.getElementById('qText').innerText = q.q;
-            document.getElementById('nextBtn').style.display = 'none';
+            const q = questions[currentIndex];
+            document.getElementById('question-count').innerText = `سؤال ${currentIndex + 1} من ${questions.length}`;
+            document.getElementById('question-text').innerText = q.question;
 
-            let box = document.getElementById('optsBox');
-            box.innerHTML = '';
-            q.opts.forEach(opt => {
-                let btn = document.createElement('button');
-                btn.className = 'btn-opt';
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "btn-option w-full py-3 px-4 rounded-xl text-right text-slate-200 font-medium";
                 btn.innerText = opt;
-                btn.onclick = () => check(btn, opt, q.ans);
-                box.appendChild(btn);
+                btn.onclick = () => checkAnswer(idx, btn);
+                container.appendChild(btn);
             });
         }
 
-        function check(btn, selected, correct) {
-            let btns = document.querySelectorAll('.btn-opt');
-            btns.forEach(b => b.disabled = true);
+        function checkAnswer(selected, btn) {
+            const container = document.getElementById('options-container');
+            const buttons = container.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
 
-            if(selected === correct) {
+            const correctIdx = questions[currentIndex].correct;
+
+            if (selected === correctIdx) {
                 btn.classList.add('correct');
-                score++;
+                score += 10;
+                coins += 10;
+                localStorage.setItem('jalsa_coins', coins);
             } else {
                 btn.classList.add('wrong');
-                btns.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
+                buttons[correctIdx].classList.add('correct');
             }
-            document.getElementById('nextBtn').style.display = 'block';
+
+            setTimeout(() => {
+                currentIndex++;
+                loadQuestion();
+            }, 1200);
         }
 
-        function nextQ() {
-            qIndex++;
-            if(qIndex < 5) {
-                renderQ();
-            } else {
-                let earned = score * 10;
-                coins += earned;
-                if(score >= 3) levels.culture++;
-                
-                localStorage.setItem('j_coins', coins);
-                localStorage.setItem('j_levels', JSON.stringify(levels));
-
-                alert(`انتهى الدور! أجبْت صح على ${score}/5\nوحصلت على ${earned} عملة 💰`);
-                window.location.href = 'index.html';
-            }<a href="index.html" style="text-decoration: none; color: white; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 12px; font-weight: bold;">🏠 الرئيسية</a>
-        }
+        function showResults() {
+            document.getElementById('quiz-box').classList.add('hidden');
+            document.getElementById('result-box').classList.remove('hidden');
+            document.getElementById('score-text').innerText = `جمعت ${score} نقطة وإضافتها لرصيدك! 🎉`;
         }
 
-        renderQ();
+        // تشغيل التحدي فور تحميل الصفحة
+        window.onload = loadQuestion;
     </script>
 </body>
 </html>
