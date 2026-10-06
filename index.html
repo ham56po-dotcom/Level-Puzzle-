@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><!-- أيقونة اللعبة لشاشة الموبايل -->
+<head>
+<!-- سطر تجاوب الشاشة ومنع التكبير والتصغير -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- أيقونة اللعبة لشاشة الموبايل -->
 <link rel="icon" type="image/png" href="./logo.png">
 <link rel="apple-touch-icon" href="./logo.png">
 <link rel="manifest" href="./manifest.json">
@@ -24,6 +28,7 @@
         * {
             box-sizing: border-box;
             user-select: none;
+            touch-action: manipulation;
         }
 
         body {
@@ -409,4 +414,4 @@
         }, { once: true });
     </script>
 </body>
-</html>
+    </html>
