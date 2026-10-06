@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جلسة - قسم الرياضيات</title>
+    <title>جلسة - الذاكرة والتركيز</title>
     <style>
         :root { --primary: #f59e0b; --bg-dark: #0f172a; --card-bg: #1e293b; --correct: #22c55e; --wrong: #ef4444; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-dark); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .card { width: 100%; max-width: 500px; background-color: var(--card-bg); padding: 20px; border-radius: 16px; box-sizing: border-box; text-align: center; }
         .header { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; color: var(--primary); }
-        .q-title { font-size: 22px; margin: 20px 0; }
+        .q-title { font-size: 20px; margin: 20px 0; min-height: 60px; display: flex; align-items: center; justify-content: center; }
         .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn-opt { background: #334155; color: white; border: 2px solid #475569; padding: 15px; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; }
         .btn-opt.correct { background: var(--correct) !important; }
@@ -22,7 +22,7 @@
 
     <div class="card">
         <div class="header">
-            <span>🧮 قسم الرياضيات</span>
+            <span>🧠 قسم الذاكرة والتركيز</span>
             <span>سؤال <span id="qIdx">1</span> من 5</span>
         </div>
 
@@ -34,26 +34,25 @@
 
     <script>
         let levels = JSON.parse(localStorage.getItem('j_levels')) || { math:1, culture:1, words:1, memory:1 };
-        let lvl = levels.math;
+        let lvl = levels.memory;
         let coins = parseInt(localStorage.getItem('j_coins')) || 100;
 
         let qIndex = 0;
         let score = 0;
         let questions = [];
 
-        function generateMathQuestions() {
+        function generateMemoryQuestions() {
             let list = [];
             for(let i=0; i<5; i++) {
-                let n1 = Math.floor(Math.random() * (8 * lvl)) + 2;
-                let n2 = Math.floor(Math.random() * (8 * lvl)) + 2;
-                let ans = n1 * n2;
-                let opts = [ans, ans+2, ans-3, ans+4].sort(() => Math.random() - 0.5);
-                list.push({ q: `كم يساوي: ${n1} × ${n2} ؟`, ans: ans, opts: opts });
+                let nums = Array.from({length: lvl + 2}, () => Math.floor(Math.random() * 9) + 1);
+                let sum = nums.reduce((a,b)=>a+b, 0);
+                let opts = [sum, sum+2, sum-1, sum+3].sort(() => Math.random() - 0.5);
+                list.push({ q: `مجموع الأرقام التالية [ ${nums.join(' - ')} ] هو:`, ans: sum, opts: opts });
             }
             return list;
         }
 
-        questions = generateMathQuestions();
+        questions = generateMemoryQuestions();
 
         function renderQ() {
             let q = questions[qIndex];
@@ -93,13 +92,13 @@
             } else {
                 let earned = score * 10;
                 coins += earned;
-                if(score >= 3) levels.math++;
+                if(score >= 3) levels.memory++;
                 
                 localStorage.setItem('j_coins', coins);
                 localStorage.setItem('j_levels', JSON.stringify(levels));
 
                 alert(`انتهى الدور! أجبْت صح على ${score}/5\nوحصلت على ${earned} عملة 💰`);
-                window.location.href = 'index.html'; // الانتقال التلقائي لصفحة الرئيسية
+                window.location.href = 'index.html';
             }
         }
 
