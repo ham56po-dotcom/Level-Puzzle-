@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جلسة - تحدي الكلمات</title>
+    <title>جلسة - ألغاز ومعلومات</title>
     <link rel="icon" type="image/png" href="./logo.png">
     <link rel="manifest" href="./manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -56,7 +56,7 @@
     <div class="card text-center">
         <!-- الشريط العلوي -->
         <div class="flex justify-between items-center mb-6 pb-3 border-b border-slate-700">
-            <span class="bg-amber-500/20 text-amber-400 font-bold px-3 py-1 rounded-full text-sm">🔤 قسم تحدي الكلمات</span>
+            <span class="bg-amber-500/20 text-amber-400 font-bold px-3 py-1 rounded-full text-sm">💡 قسم الثقافة والألغاز</span>
             <span id="question-count" class="text-amber-400 font-bold">سؤال 1 من 5</span>
         </div>
 
@@ -64,15 +64,15 @@
         <div id="quiz-box">
             <h2 id="question-text" class="text-xl font-bold mb-6 text-slate-100 leading-relaxed">جاري تحميل السؤال...</h2>
             <div id="options-container" class="grid grid-cols-1 gap-3 mb-6">
-                <!-- الإجابات ستظهر هنا -->
+                <!-- الإجابات -->
             </div>
         </div>
 
-        <!-- نتيجة نهاية التحدي -->
+        <!-- نتيجة التحدي -->
         <div id="result-box" class="hidden my-4">
             <div class="text-5xl mb-3">🎉</div>
-            <h3 class="text-2xl font-bold mb-2">أحسنت! أكملت التحدي</h3>
-            <p id="score-text" class="text-lg text-slate-300 mb-6">جمعت 0 عملة!</p>
+            <h3 class="text-2xl font-bold mb-2">ممتاز! أنهيت ألغاز اليوم</h3>
+            <p id="score-text" class="text-lg text-slate-300 mb-6">جمعت نقاط جديدة!</p>
             <button onclick="location.reload()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 rounded-xl mb-3">إعادة التحدي 🔄</button>
         </div>
 
@@ -82,36 +82,15 @@
 
     <script>
         const questions = [
-            {
-                question: "ما مرادف كلمة 'الصمود'؟",
-                options: ["الثبات والتحمل", "الهروب", "الضعف", "التراجع"],
-                correct: 0
-            },
-            {
-                question: "ما ضد كلمة 'السخاء'؟",
-                options: ["الكرم", "البخل", "الوفاء", "الشجاعة"],
-                correct: 1
-            },
-            {
-                question: "ما الجمع الصحيح لكلمة 'حسام'؟",
-                options: ["حواسم", "أحسام", "حسمة", "أحسم"],
-                correct: 1
-            },
-            {
-                question: "ما معنى كلمة 'الشغف'؟",
-                options: ["الشدة والحزن", "الحب والاهتمام الشديد", "الخوف والتردد", "التعب الإرهاق"],
-                correct: 1
-            },
-            {
-                question: "ما مفرد كلمة 'دلاء'؟",
-                options: ["دالي", "دلو", "دالية", "دليل"],
-                correct: 1
-            }
+            { question: "ما هي أطول دولة في العالم من حيث المساحة؟", options: ["روسيا", "كندا", "الصين", "أمريكا"], correct: 0 },
+            { question: "ما هو العنصر الأساسي للتنفس والذي يشكل جزءاً كبيراً من الهواء؟", options: ["الأكسجين", "النيتروجين", "الهيدروجين", "الكربون"], correct: 1 },
+            { question: "ما هي عاصمة جمهورية مصر العربية؟", options: ["الإسكندرية", "القاهرة", "الجيزة", "أسوان"], correct: 1 },
+            { question: "أين تقع أهرامات الجيزة؟", options: ["السودان", "مصر", "المغرب", "العراق"], correct: 1 },
+            { question: "ما أسرع كائن حي على وجه الأرض؟", options: ["الفهد", "صقر الشاهين", "الأسد", "الغزال"], correct: 1 }
         ];
 
         let currentIndex = 0;
         let score = 0;
-        let coins = parseInt(localStorage.getItem('jalsa_coins') || '100');
 
         function loadQuestion() {
             if (currentIndex >= questions.length) {
@@ -145,8 +124,6 @@
             if (selected === correctIdx) {
                 btn.classList.add('correct');
                 score += 10;
-                coins += 10;
-                localStorage.setItem('jalsa_coins', coins);
             } else {
                 btn.classList.add('wrong');
                 buttons[correctIdx].classList.add('correct');
@@ -161,10 +138,9 @@
         function showResults() {
             document.getElementById('quiz-box').classList.add('hidden');
             document.getElementById('result-box').classList.remove('hidden');
-            document.getElementById('score-text').innerText = `جمعت ${score} نقطة وإضافتها لرصيدك! 🎉`;
+            document.getElementById('score-text').innerText = `جمعت ${score} نقطة في معلوماتك العامة! 🎉`;
         }
 
-        // تشغيل التحدي فور تحميل الصفحة
         window.onload = loadQuestion;
     </script>
 </body>
